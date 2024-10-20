@@ -1,5 +1,5 @@
 # Stage 1: Clone the repository
-FROM node:20-bullseye-slim as clone
+FROM node:20-bullseye-slim AS clone
 
 # Install git
 RUN apt-get update && \
@@ -9,7 +9,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Clone the repository
-RUN git clone https://github.com/imputnet/cobalt.git /app
+RUN git clone https://github.com/imputnet/cobalt.git .
 
 # Stage 2: Set up the environment and install dependencies
 FROM node:20-bullseye-slim AS base
@@ -19,7 +19,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 FROM base AS build
 WORKDIR /app
 
-# Copy the cloned repository files, including .git
+# Copy the cloned repository files
 COPY --from=clone /app /app
 
 RUN corepack enable
@@ -40,7 +40,7 @@ WORKDIR /app
 # Copy the built API files
 COPY --from=build /prod/api /app
 
-# Copy the .git directory for runtime access
+# Copy the .git directory explicitly as part of the cloned repository
 COPY --from=clone /app/.git /app/.git
 
 # Expose the required port and run the application
