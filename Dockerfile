@@ -1,3 +1,7 @@
+FROM node:20-bullseye-slim as build
+WORKDIR /app
+RUN git clone https://github.com/imputnet/cobalt.git /app
+
 FROM node:20-bullseye-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
