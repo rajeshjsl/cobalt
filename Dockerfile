@@ -19,7 +19,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 FROM base AS build
 WORKDIR /app
 
-# Copy the cloned repository files
+# Copy the cloned repository files, including .git
 COPY --from=clone /app /app
 
 RUN corepack enable
@@ -39,6 +39,9 @@ WORKDIR /app
 
 # Copy the built API files
 COPY --from=build /prod/api /app
+
+# Copy the .git directory for runtime access
+COPY --from=clone /app/.git /app/.git
 
 # Expose the required port and run the application
 EXPOSE 9000
